@@ -1,0 +1,43 @@
+---
+- name: create `/etc/nginx/letsencrypt.conf`
+  template:
+    src: letsencrypt.conf.j2
+    dest: /etc/nginx/letsencrypt.conf
+    owner: root
+    group: root
+    mode: 0444
+  tags:
+    - role::nginx-letsencrypt
+    - role::nginx-letsencrypt::nginx
+
+- name: create the renewal hook directory
+  file:
+    path: /etc/letsencrypt/renewal-hooks/deploy/
+    state: directory
+    owner: root
+    group: root
+    mode: 0500
+  tags:
+    - role::nginx-letsencrypt
+    - role::nginx-letsencrypt::nginx
+
+- name: reload services on certificate renewal
+  copy:
+    content: |
+      #!/bin/sh
+      set -eu
+
+      systemctl reload nginx
+      {% if nginx_letsencrypt_reload_services %}
+      systemctl reload {{ nginx_letsencrypt_reload_services | join(" ") }}
+      {% endif %}
+      {% if nginx_letsencrypt_restart_services %}
+      systemctl restart {{ nginx_letsencrypt_restart_services | join(" ") }}
+      {% endif %}
+    dest: /etc/letsencrypt/renewal-hooks/deploy/reload-nginx
+    owner: root
+    group: root
+    mode: 0500
+  tags:
+    - role::nginx-letsencrypt
+    - role::nginx-letsencrypt::nginx

@@ -1,0 +1,30 @@
+---
+- name: create the webroot
+  file:
+    path: "{{ nginx_letsencrypt_webroot_path }}"
+    state: directory
+    owner: root
+    group: www-data
+    mode: 0750
+  tags:
+    - role::nginx-letsencrypt
+    - role::nginx-letsencrypt::webroot
+
+- name: fetch the certificate
+  command: >
+    /usr/bin/certbot
+    {% if nginx_letsencrypt_agree_tos %}
+    --agree-tos
+    {% endif %}
+    --non-interactive
+    --email {{ nginx_letsencrypt_email }}
+    --authenticator webroot
+    --webroot-path {{ nginx_letsencrypt_webroot_path | quote }}
+    --domains {{ nginx_letsencrypt_domains | join(',') | quote }}
+    certonly
+  args:
+    creates: /etc/letsencrypt/live/{{ nginx_letsencrypt_domains[0] }}
+  tags:
+    - role::nginx-letsencrypt
+    - role::nginx-letsencrypt::certbot
+    - role::nginx-letsencrypt::certificates

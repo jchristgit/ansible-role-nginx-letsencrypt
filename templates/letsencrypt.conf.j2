@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+#
+# NGINX location block used to allow access to `.well-known/acme-challenge` on HTTP virtual hosts.
+# HTTP virtual hosts can be set up to redirect to HTTPS and `include` this file to allow certificate challenge validation.
+
+location ^~ /.well-known/acme-challenge/ {
+    root {{ nginx_letsencrypt_webroot_path }};
+}
+
+# vim: ft=sh.jinja2:

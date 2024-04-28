@@ -1,0 +1,10 @@
+---
+nginx_letsencrypt_webroot_path: /var/www/_letsencrypt
+nginx_letsencrypt_agree_tos: false
+
+nginx_letsencrypt_domains:
+  - "{{ ansible_fqdn }}"
+nginx_letsencrypt_email: webmaster@{{ nginx_letsencrypt_domains[0] }}
+nginx_letsencrypt_reload_services:
+  - nginx
+nginx_letsencrypt_restart_services: []
