@@ -1,6 +1,6 @@
 ---
-- name: create `/etc/nginx/letsencrypt.conf`
-  template:
+- name: Create `/etc/nginx/letsencrypt.conf`
+  ansible.builtin.template:
     src: letsencrypt.conf.j2
     dest: /etc/nginx/letsencrypt.conf
     owner: root
@@ -10,8 +10,8 @@
     - role::nginx-letsencrypt
     - role::nginx-letsencrypt::nginx
 
-- name: create the renewal hook directory
-  file:
+- name: Create the renewal hook directory
+  ansible.builtin.file:
     path: /etc/letsencrypt/renewal-hooks/deploy/
     state: directory
     owner: root
@@ -21,8 +21,8 @@
     - role::nginx-letsencrypt
     - role::nginx-letsencrypt::nginx
 
-- name: reload services on certificate renewal
-  copy:
+- name: Reload services on certificate renewal
+  ansible.builtin.copy:
     content: |
       #!/bin/sh
       set -eu

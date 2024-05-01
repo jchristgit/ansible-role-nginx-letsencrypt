@@ -1,6 +1,6 @@
 ---
-- name: create the webroot
-  file:
+- name: Create the webroot
+  ansible.builtin.file:
     path: "{{ nginx_letsencrypt_webroot_path }}"
     state: directory
     owner: root
@@ -10,8 +10,8 @@
     - role::nginx-letsencrypt
     - role::nginx-letsencrypt::webroot
 
-- name: fetch the certificate
-  command: >
+- name: Fetch the certificate
+  ansible.builtin.command: >
     /usr/bin/certbot
     {% if nginx_letsencrypt_agree_tos %}
     --agree-tos
